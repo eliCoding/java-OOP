@@ -3,67 +3,49 @@ import java.util.Scanner;
 
 public class simpleCalc {
 
-    public static void main(String[] args) {
-        Scanner input = new Scanner(System.in);
-        int n = 0;
-        float k = 0;
-        float j = 0;
-        System.out.println("-------------");
-        System.out.println("1.Add");
-        System.out.println("2.Subtract");
-        System.out.println("3.Multiply");
-        System.out.println("4.Divide");
-        System.out.println("exit the system!");
-        System.out.println("----------------");
-        System.out.println("Please enter a number:");
-        n = input.nextInt();
-        System.out.println("the number that you entered is: " + n);
-        
-        
-        
-        do {
+    static Scanner input = new Scanner(System.in);
 
-            switch (n) {
+    public static void main(String[] args) {
+        while (true) {
+            System.out.println("1. Add\n"
+                    + "2. Subtract\n"
+                    + "3. Multiply\n"
+                    + "4. Divide\n"
+                    + "0. Exit\n");
+            int choice = input.nextInt();
+            if ((choice < 0) || (choice > 4)) {
+                System.out.println("Invalid choice");
+                continue;
+            }
+            if (choice == 0) {
+                System.out.println("Bye bye");
+                return;
+            }
+            //
+            System.out.println("Enter two floating point values");
+            double v1 = input.nextDouble();
+            double v2 = input.nextDouble();
+
+            double result = 0;
+            switch (choice) {
                 case 1:
-                    System.out.println("1.Add");
-                    System.out.println("Please enter your number:");
-                    k = input.nextFloat();
-                    j = input.nextFloat();
-                    System.out.printf( "the sum of two float numbers:"+k+j);
+                    result = v1 + v2;
                     break;
                 case 2:
-                    System.out.println("2.Subtract");
-                    System.out.println("Please enter your number:");
-                    k = input.nextFloat();
-                    j = input.nextFloat();
-                    float p = k - j;
-                    System.out.printf("the Subtract is: " + p);
+                    result = v1 - v2;
                     break;
                 case 3:
-                    System.out.println("3.Multiply");
-                    k = input.nextFloat();
-                    j = input.nextFloat();
-                    float m = k*j;
-                    System.out.printf("the Multiply is: " + m);
+                    result = v1 * v2;
                     break;
                 case 4:
-                    System.out.println("4.Divide");
-                    k = input.nextFloat();
-                    j = input.nextFloat();
-                    float d = k/j;
-                    System.out.printf("the Divide is: %.4f: " + d);
+                    result = v1 / v2;
                     break;
                 default:
-                    System.out.println("exit the system!");
-                    break;
+                    System.err.println("Fatal error: invalid control flow");
+                    System.exit(1);
             }
-            break;
-            
-           
-        } while (n < 5);
-        
-        
-
+            System.out.printf("Result is: %.4f", result);
+        }
     }
 
 }
