@@ -1,4 +1,23 @@
+/*Ask user to choose an option from menu:
+1. Add
+2. Subtract
+3. Multiply
+4. Divide
 
+If user enters an invalid choice, display error message and exit.
+
+Otherwise ask user for 2 floating point values,
+perform the needed computation and display the result.
+
+BONUS: Add one more option to the menu.
+0. Exit
+
+And add a loop around the entire program so that
+the menu is displayed repeatedly until user asks to exit.
+
+Suggestion: instead of do-while loop use
+an infinite loop and a break/return.
+ */
 import java.util.Scanner;
 
 public class simpleCalc {
@@ -44,7 +63,7 @@ public class simpleCalc {
                     System.err.println("Fatal error: invalid control flow");
                     System.exit(1);
             }
-            System.out.printf("Result is: %.4f", result);
+            System.out.printf("Result is: %.4f\n", result);
         }
     }
 
