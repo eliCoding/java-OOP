@@ -1,0 +1,12 @@
+Rectangle;blue;4.5;7.2
+Square;green;2.1
+Square;;3.4
+Square;yellow;2.2;6.5
+Quadroplane;33.3;1;2.3;3.3
+Circle;fuchsia;6.8
+Circle;gray;7.8;7.8
+Rectangle
+
+Point;pink
+Sphere;marine blue;68.9
+Sphere;purple;12.2.2

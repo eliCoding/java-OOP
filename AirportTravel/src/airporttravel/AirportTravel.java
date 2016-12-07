@@ -9,7 +9,7 @@ In the main directory of the project, using Notepad create file "airports.txt" w
 
 YUL;Montreal;45.4697842;-73.7554174
 YYZ;Toronto;43.6777215;-79.6270084
-JFK;New York JFK;40.6413151;-73.7803278,17
+JFK;New York JFK;40.6413151;-73.7803278
 
 (Add at least 3 more lines)
 
@@ -49,11 +49,14 @@ Regarding item #3 - if you can't find the 2 nearest airports then find the 1 nea
 
 
  */
+
 package airporttravel;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -126,12 +129,12 @@ class Airport {
         }
         this.longitude = longitude;
     }
-    
+
     @Override
     public String toString() {
         return String.format("%s (%s) at (%.7f,%.7f)", code, city, latitude, longitude);
     }
-    
+
 }
 
 public class AirportTravel {
@@ -143,23 +146,28 @@ public class AirportTravel {
     static void readAirports() throws FileNotFoundException {
         Scanner fileInput = new Scanner(new File(FILE_NAME));
         while (fileInput.hasNextLine()) {
-            String fileLine = fileInput.nextLine();
-            /* VERSION 1
+            String fileLine = null;
+            try {
+                fileLine = fileInput.nextLine();
+                /* VERSION 1
             Scanner lineInput = new Scanner(fileLine).useDelimiter(";");
             String code = lineInput.next();
             String city = lineInput.next();
             double lat = lineInput.nextDouble();
             double lgt = lineInput.nextDouble();
-             */
-            String data[] = fileLine.split(";");
-            if (data.length != 4) {
-                throw new IllegalArgumentException("Line malformed: " + fileLine);
+                 */
+                String data[] = fileLine.split(";");
+                if (data.length != 4) {
+                    throw new IllegalArgumentException("Line malformed: " + fileLine);
+                }
+                String code = data[0];
+                String city = data[1];
+                double lat = Double.parseDouble(data[2]);
+                double lgt = Double.parseDouble(data[3]);
+                airportList.add(new Airport(code, city, lat, lgt));
+            } catch (IllegalArgumentException e) {
+                System.err.println("Skipping invalid input line: " + fileLine);
             }
-            String code = data[0];
-            String city = data[1];
-            double lat = Double.parseDouble(data[2]);
-            double lgt = Double.parseDouble(data[3]);
-            airportList.add(new Airport(code, city, lat, lgt));
         }
         fileInput.close();
     }
@@ -196,7 +204,9 @@ public class AirportTravel {
                 int choice = getMenuChoice();
                 switch (choice) {
                     case 0:
-                        System.out.println("Bye bye");                        
+                        // save all airports back to file
+                        saveAllAirportsToFile();
+                        System.out.println("Bye bye");
                         return;
                     case 1:
                         showAllAirports();
@@ -217,54 +227,63 @@ public class AirportTravel {
             }
         } catch (IOException e) {
             System.err.println("Error reading file: " + e.getMessage());
+            e.printStackTrace();
         } catch (IllegalArgumentException e) {
             System.err.println("Error reading file: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
     private static void showAllAirports() {
+        // VERSION 1
+       // for (int i = 0; i < airportList.size(); i++) {
+          //  Airport a = airportList.get(i);
+          //  System.out.printf("%s-%s\n", a.getCode(), a.getCity());
+       // }
+        // VERSION 2
         for (Airport a : airportList) {
-            System.out.println(a.toString());
+            System.out.println(a);
         }
+         
     }
 
     private static Airport findAirportByCode(String code) {
-        for (Airport a: airportList) {
+        for (Airport a : airportList) {
             if (a.getCode().equals(code)) {
                 return a;
             }
         }
         return null;
     }
-    
+
     // returns distance in meters - copied from
     // http://stackoverflow.com/questions/3694380/calculating-distance-between-two-points-using-latitude-longitude-what-am-i-doi
-    public static double distance(double lat1, double lng1, 
-                                      double lat2, double lng2){
-     double a = (lat1-lat2)*distPerLat(lat1);
-     double b = (lng1-lng2)*distPerLng(lat1);
-     return Math.sqrt(a*a+b*b);
+    public static double distance(double lat1, double lng1,
+            double lat2, double lng2) {
+        double a = (lat1 - lat2) * distPerLat(lat1);
+        double b = (lng1 - lng2) * distPerLng(lat1);
+        return Math.sqrt(a * a + b * b);
     }
 
-    private static double distPerLng(double lat){
-      return 0.0003121092*Math.pow(lat, 4)
-             +0.0101182384*Math.pow(lat, 3)
-                 -17.2385140059*lat*lat
-             +5.5485277537*lat+111301.967182595;
+    private static double distPerLng(double lat) {
+        return 0.0003121092 * Math.pow(lat, 4)
+                + 0.0101182384 * Math.pow(lat, 3)
+                - 17.2385140059 * lat * lat
+                + 5.5485277537 * lat + 111301.967182595;
     }
 
-    private static double distPerLat(double lat){
-            return -0.000000487305676*Math.pow(lat, 4)
-                -0.0033668574*Math.pow(lat, 3)
-                +0.4601181791*lat*lat
-                -1.4558127346*lat+110579.25662316;
+    private static double distPerLat(double lat) {
+        return -0.000000487305676 * Math.pow(lat, 4)
+                - 0.0033668574 * Math.pow(lat, 3)
+                + 0.4601181791 * lat * lat
+                - 1.4558127346 * lat + 110579.25662316;
     }
-           
+
     private static double getDistanceInKm(Airport a1, Airport a2) {
         return distance(a1.getLatitude(), a1.getLongitude(),
                 a2.getLatitude(), a2.getLongitude()) / 1000;
     }
-    
+
     private static void findDistanceBetweenTwoAirports() {
         System.out.print("Enter airport 1 code: ");
         //
@@ -289,11 +308,77 @@ public class AirportTravel {
     }
 
     private static void findTwoNearestAirports() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        System.out.print("Enter airport code: ");
+        //
+        String code = input.nextLine();
+        Airport homeAirport = findAirportByCode(code);
+        if (homeAirport == null) {
+            System.out.println("Airport not found, try again.");
+            return;
+        }
+        // what if first airport is home airport?
+        Airport minAirport = airportList.get(0);
+        if (minAirport == homeAirport) {
+            minAirport = airportList.get(1);
+        }
+        double minDistance = getDistanceInKm(homeAirport, minAirport);
+        for (Airport a : airportList) {
+            // skip the home airport since distance to itself is always 0
+            if (a == homeAirport) {
+                continue;
+            }
+            double dist = getDistanceInKm(homeAirport, a);
+            if (dist < minDistance) {
+                minDistance = dist;
+                minAirport = a;
+            }
+        }
+        System.out.printf("Airport closest to %s is %s at %.2fkm\n",
+                homeAirport.getCode(), minAirport.getCode(), minDistance);
+
+        /* //
+        int intArray [] = { 3, -3, 0, 7, -2 };
+        int min = intArray[0];
+        for (int i = 0; i < intArray.length; i++) {
+            if (intArray[i] < min) {
+                min = intArray[i];
+            }
+        } */
     }
 
     private static void addAirport() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            System.out.print("Enter airport code: ");
+            String code = input.nextLine();
+            System.out.print("Enter city: ");
+            String city = input.nextLine();
+            System.out.print("Enter latitude: ");
+            double lat = input.nextDouble();
+            input.nextLine();
+            System.out.print("Enter longitude: ");
+            double lgt = input.nextDouble();
+            input.nextLine();
+            //
+            Airport a = new Airport(code, city, lat, lgt);
+            airportList.add(a);
+        } catch (InputMismatchException | IllegalArgumentException e) {
+            System.err.println("Error creating airport: " + e.getMessage());
+        }
+
+    }
+
+    private static void saveAllAirportsToFile() {
+        try {
+            PrintWriter pw = new PrintWriter(new FileWriter(FILE_NAME));
+            for (Airport a : airportList) {
+                pw.printf("%s;%s;%f;%f\n", a.getCode(), a.getCity(),
+                        a.getLatitude(), a.getLongitude());
+            }
+            pw.close();
+        } catch (IOException e) {
+            System.err.println("Error saving to file");
+            // FIXME close the file anyway
+        }
     }
 
 }

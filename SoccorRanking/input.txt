@@ -1,0 +1,6 @@
+Brazil;7;2
+Germany;5;3
+Iran;4;4
+France;8;1
+Russia;7;3
+Italy;4;4

@@ -1,4 +1,3 @@
-
 package filesaveread;
 
 
@@ -51,6 +50,7 @@ public class FileSaveRead {
             String city = input.nextLine();
 
             PrintWriter pw = new PrintWriter(new FileWriter("data.txt"));
+
             pw.printf("%s is %d years old lives in %s", name, age, city);
             pw.close();
 

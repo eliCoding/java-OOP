@@ -1,0 +1,10 @@
+Bicycle;Jerry's bike;2;1
+
+Motorbike;My blue machine;2;2;321.7;Y7U777
+Motorbike;asfdlkajsf
+Car;Toyota Corolla LE 2009;4;5;195.3;GT5RRE
+Car;Toyota Corolla LE 2009;4;5;195.3;GT5RRE;kjhkh
+Car;;4;5;195.3;GT5RRE
+Bus;Greyhound LXER;10;67;175.4;FTR33YD
+Bus;Greyhound LXER;10;67;175.4;F
+Bus;Greyhound LXER;0;67;175.4;FJKHJHR
